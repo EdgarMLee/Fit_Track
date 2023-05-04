@@ -7,7 +7,6 @@ class Plan(db.Model):
   owner_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
 
   name = db.Column(db.String(50), nullable=False)
-  workouts = db.Column(db.String(100), nullable=False)
   private = db.Column(db.Boolean, nullable=False)
   time = db.Column(db.Integer, nullable=False)
 
@@ -19,7 +18,9 @@ class Plan(db.Model):
     return {
       "id": self.id,
       "name": self.name,
-      "workouts": self.workouts,
       "private": self.private,
-      "time": self.time
+      "time": self.time,
+      "owner_id": self.owner_id,
+      "workout_ids": [workout.id for workout in self.workouts],
+      "exercise_ids": [exercise.id for exercise in self.exercises],
     }

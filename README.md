@@ -25,7 +25,7 @@
 ## How to run Fit Track Locally:
 * Clone the repository in your terminal: ```git clone https://github.com/EdgarMLee/Fit_Track.git```
 * cd into Fit_Track folder and run ```pipenv install```
-* Open two terminal paths for both PearLotus and react-app.
+* Open two terminal paths for both Fit_Track and react-app.
 * Under Fit_Track run ```pipenv shell`` then ```flask run```, for react-app run ```npm install```
 * Create a ```.env``` file under the root of the backend folder with the following contents:
 ```

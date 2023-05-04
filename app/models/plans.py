@@ -22,5 +22,5 @@ class Plan(db.Model):
       "time": self.time,
       "owner_id": self.owner_id,
       "workout_ids": [workout.id for workout in self.workouts],
-      "exercise_ids": [exercise.id for exercise in self.exercises],
+      "exercise_ids": [exercise.id for exercise in self.exercises]
     }

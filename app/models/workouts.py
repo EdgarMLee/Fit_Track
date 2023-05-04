@@ -20,5 +20,6 @@ class Workout(db.Model):
       'setId': self.setId,
       'completed': self.completed,
       'set': self.set.to_dict(),
-      'planId': self.planId,
+      'exercise': self.exercise.to_dict(),
+      'planId': self.planId
     }

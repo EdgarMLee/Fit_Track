@@ -13,11 +13,26 @@ def all_plans():
     planarr = []
     if plans is not None:
         for plan in plans:
-            planId = plan.to_dict()["id"]
-            image = db.session.query(Image).filter(Image.planId == planId).first()
             plan = plan.to_dict()
-            if image:
-                plan['image'] = image.to_dict()
+            # planId = plan.to_dict()["id"]
+            # image = db.session.query(Image).filter(Image.planId == planId).first()
+            # if image:
+            #     plan['image'] = image.to_dict()
             planarr.append(plan)
     return {"plans": planarr}
 
+#Get plan by ID
+@plan_routes.route("/<int:id>")
+def get_plan(id):
+    plan = Plan.query.get(id)
+    planarr = []
+    if plan is not None:
+        plan = plan.to_dict()
+        # planId = plan.to_dict()["id"]
+        # image = db.session.query(Image).filter(Image.planId == planId).first()
+        # image = db.session.query(Image).filter(Image.planId == planId).[1]
+        # ^ Input that once you added seeder data to image for 2nd image
+        # if image:
+        #     plan["image"] = image.to_dict()
+        planarr.append(plan)
+    return plan

@@ -21,7 +21,7 @@ def all_plans():
             planarr.append(plan)
     return {"plans": planarr}
 
-#Get plan by ID
+#Get Plan by ID
 @plan_routes.route("/<int:id>")
 def get_plan(id):
     plan = Plan.query.get(id)
@@ -36,3 +36,27 @@ def get_plan(id):
         #     plan["image"] = image.to_dict()
         planarr.append(plan)
     return plan
+
+#Create a Plan
+@plan_routes.route("/", methods=["POST"])
+@login_required
+def create_plan():
+    form = PlanForm()
+    form["csrf_token"].data = request.cookies["csrf_token"]
+    exercises = Exercise.query.all()
+    form.exercise.choices=[(exercise.to_exercise(), exercise.to_exercisename()) for exercise in exercises]
+    if form.validate_on_submit():
+        new_plan = Plan(
+            owner_id=current_user.id,
+            name=form.name.data,
+            private=form.private.data,
+            time=form.time.data,
+            exercises=form.exercises.data,
+            workouts=form.workouts.data
+        )
+        db.session.add(new_plan)
+        db.session.commit()
+        return jsonify(new_plan.to_dict()), 200
+    else:
+        return {"errors": validation_errors_to_error_messages(form.errors)}, 401
+

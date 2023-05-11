@@ -112,13 +112,18 @@ def edit_plan(plan_id):
 @plan_routes.route("/<int:plan_id>", methods=['DELETE'])
 @login_required
 def delete_plan(plan_id):
+    #Query to get plan by ID
     plan = Plan.query.get(plan_id)
+    #Authorization step to ensure only owner can delete plan
     if plan.owner_id == current_user.id:
+        #Delete and save changes to database
         db.session.delete(plan)
         db.session.commit()
+        #Response message with status code after deletion
         return {
                 "message": "Plan successfully deleted",
                 "status-code": 200
         }, 200
     else:
+        #Unauthorized user error
         return {"errors": "Unauthorized User"}, 401

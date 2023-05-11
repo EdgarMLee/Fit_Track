@@ -70,4 +70,24 @@ def create_plan():
         return {"errors": validation_errors_to_error_messages(form.errors)}, 401
 
 #Edit a Plan
-
+@plan_routes.route("/<int:plan_id>", methods=["PUT"])
+@login_required
+def edit_plan(plan_id):
+  form = PlanForm()
+  form["csrf_token"].data = request.cookies["csrf_token"]
+  exercises = Exercise.query.all()
+  form.exercise.choices=[(exercise.to_exercise(), exercise.to_exercisename()) for exercise in exercises]
+  if form.validate_on_submit():
+      plan = Plan.query.get(plan_id)
+      if plan.owner_id == current_user.id:
+          plan.name = form.name.data
+          plan.private = form.private.data
+          plan.time = form.time.data
+          plan.exercises = form.exercises.data
+          plan.workouts = form.workouts.data
+          db.session.commit()
+          return jsonify(plan.to_dict()), 204
+      else:
+          return {"errors": "Unauthorized"}, 401
+  else:
+      return {"errors": validation_errors_to_error_messages(form.errors)}, 401

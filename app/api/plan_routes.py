@@ -127,3 +127,16 @@ def delete_plan(plan_id):
     else:
         #Unauthorized user error
         return {"errors": "Unauthorized User"}, 401
+
+#Search a Plan
+@plan_routes.route("/search")
+def search_plan():
+    #Query for value of "name" paramter from request's query string
+    query_name = request.args.get("name")
+    #Case-insensitive search filter on "name" column of Plan model
+    #ilike is a partial match function using query string
+    plans = Plan.query.filter(Plan.name.ilike(f"%{query_name}%")).all()
+    #Return searched results as JSON response 
+    return {
+        "plans": [plan.to_dict() for plan in plans]
+    }

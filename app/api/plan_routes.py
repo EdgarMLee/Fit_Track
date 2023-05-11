@@ -11,19 +11,10 @@ plan_routes = Blueprint("plans", __name__, url_prefix="/plans")
 def all_plans():
     #Query for all plans
     plans = Plan.query.all()
-    #Empty array to store queried plans
-    planarr = []
-    if plans is not None:
-        #If plans exists, create loop and convert object to dictionary
-        for plan in plans:
-            plan = plan.to_dict()
-            # planId = plan.to_dict()["id"]
-            # image = db.session.query(Image).filter(Image.planId == planId).first()
-            # if image:
-            #     plan['image'] = image.to_dict()
-            #append dictionary to array
-            planarr.append(plan)
-    #Return as a json response
+    #Create an array that stores list of plan dictionaries directly
+    #Appends to array in loop
+    planarr = [plan.to_dict() for plan in plans]
+    #Return JSON response with list of plan dictionaries 
     return {"plans": planarr}
 
 #Get Plan by ID

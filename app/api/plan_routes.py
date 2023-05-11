@@ -107,3 +107,18 @@ def edit_plan(plan_id):
           return {"errors": "Unauthorized"}, 401
   else:
       return {"errors": validation_errors_to_error_messages(form.errors)}, 401
+
+#Delete Plan
+@plan_routes.route("/<int:plan_id>", methods=['DELETE'])
+@login_required
+def delete_plan(plan_id):
+    plan = Plan.query.get(plan_id)
+    if plan.owner_id == current_user.id:
+        db.session.delete(plan)
+        db.session.commit()
+        return {
+                "message": "Plan successfully deleted",
+                "status-code": 200
+        }, 200
+    else:
+        return {"errors": "Unauthorized User"}, 401

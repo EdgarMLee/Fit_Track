@@ -35,7 +35,7 @@ def get_plan(id):
     planarr = []
     #If plan exists, convert object to dictionary
     if plan is not None:
-        plan = plan.to_dict()
+        plan_dict = plan.to_dict()
         # planId = plan.to_dict()["id"]
         # image = db.session.query(Image).filter(Image.planId == planId).first()
         # image = db.session.query(Image).filter(Image.planId == planId).[1]
@@ -43,8 +43,17 @@ def get_plan(id):
         # if image:
         #     plan["image"] = image.to_dict()
         #Append plan to array
-        planarr.append(plan)
-    return plan
+        planarr.append(plan_dict)
+    return {"plans": planarr}
+
+#Get all Plans by current user
+@plan_routes.route("/current")
+@login_required
+def get_current():
+    #Query for plans that belong to owner
+    plans = Plan.query.filter(Plan.owner_id == current_user.id).all()
+    #Return JSON response with each plan (object) converted to dictionary
+    return {"plans": [plan.to_dict() for plan in plans]}
 
 #Create a Plan
 @plan_routes.route("/", methods=["POST"])
@@ -136,7 +145,7 @@ def search_plan():
     #Case-insensitive search filter on "name" column of Plan model
     #ilike is a partial match function using query string
     plans = Plan.query.filter(Plan.name.ilike(f"%{query_name}%")).all()
-    #Return searched results as JSON response 
+    #Return searched results as JSON response
     return {
         "plans": [plan.to_dict() for plan in plans]
     }

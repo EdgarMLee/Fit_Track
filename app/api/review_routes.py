@@ -30,5 +30,7 @@ def all_reviews():
 #Get review by ID
 @review_routes.route("/<int:id>")
 def get_review(id):
+    #Query review based on ID
     review = Review.query.get(id)
+    #Return review convert to dictionary from object
     return review.to_dict()

@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from app.models import db, Plan, Workout, Exercise, Review, Set, Image
+from app.models import db, Plan, Workout, Exercise, Review, Set
 from ..forms.plan_form import PlanForm
 from flask_login import current_user, login_required
 from .auth_routes import validation_errors_to_error_messages
@@ -14,7 +14,7 @@ def all_plans():
     #Create an array that stores list of plan dictionaries directly
     #Appends to array in loop
     planarr = [plan.to_dict() for plan in plans]
-    #Return JSON response with list of plan dictionaries 
+    #Return JSON response with list of plan dictionaries
     return {"plans": planarr}
 
 #Get Plan by ID

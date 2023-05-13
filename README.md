@@ -1,4 +1,5 @@
 # Welcome to Fit Track
+Fit Track is a workout app that allows you to choose workout plans and create your own with a selection of different types of exercises and sets!
 
 ## This project was developed utilizing:
 

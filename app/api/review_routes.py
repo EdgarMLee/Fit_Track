@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from app.models import db, Plan, Workout, Exercise, Review, Set
 from ..forms.plan_form import PlanForm
+from ..forms.review_form import ReviewForm
 from flask_login import current_user, login_required
 from .auth_routes import validation_errors_to_error_messages
 
@@ -34,3 +35,47 @@ def get_review(id):
     review = Review.query.get(id)
     #Return review convert to dictionary from object
     return review.to_dict()
+
+#Get review by current user
+@review_routes.route("/current")
+@login_required
+def get_current():
+    reviews = (
+    #Query from database for review
+    db.session.query(Review)
+    .join(Plan)
+    #Retrive all review based on user
+    .filter_by(userId=current_user.id)
+    .all()
+)
+    #Array containing review based on ID
+    plan_ids = [review.planId for review in reviews]
+    #Query filtering out plans
+    plans = Plan.query.filter(Plan.id.in_(plan_ids)).all()
+    #Create dictionary with id as key and name for plans
+    plan_dict = {plan.id: plan.to_dict()["name"] for plan in plans}
+    reviewarr = []
+    for review in reviews:
+        review_dict = review.to_dict()
+        review_dict["plan"] = plan_dict.get(review.planId)
+        reviewarr.append(review_dict)
+    return {"reviews": reviewarr}
+
+# Create Review
+@review_routes.route("", methods=['POST'])
+@login_required
+def create_review():
+    form = ReviewForm()
+    form["csrf_token"].data = request.cookies["csrf_token"]
+    if form.validate_on_submit():
+        new_review = Review (
+            exerciseId = form.exerciseId.data,
+            userId = form.userId.data,
+            stars = form.stars.data,
+            description = form.description.data
+        )
+        db.session.add(new_review)
+        db.session.commit()
+        return jsonify(new_review.to_dict()), 200
+    else:
+        return {"errors": validation_errors_to_error_messages(form.errors)}, 401

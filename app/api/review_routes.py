@@ -65,17 +65,19 @@ def get_current():
 @review_routes.route("", methods=['POST'])
 @login_required
 def create_review():
+    data = request.json
+    new_review = Review(
+        exerciseId=data.get('exerciseId'),
+        userId=data.get('userId'),
+        stars=data.get('stars'),
+        description=data.get('description')
+    )
     form = ReviewForm()
-    form["csrf_token"].data = request.cookies["csrf_token"]
+    form['csrf_token'].data = data.get('csrf_token')
+
     if form.validate_on_submit():
-        new_review = Review (
-            exerciseId = form.exerciseId.data,
-            userId = form.userId.data,
-            stars = form.stars.data,
-            description = form.description.data
-        )
         db.session.add(new_review)
         db.session.commit()
-        return jsonify(new_review.to_dict()), 200
+        return jsonify(new_review.to_dict()), 201
     else:
-        return {"errors": validation_errors_to_error_messages(form.errors)}, 401
+        return {"errors": validation_errors_to_error_messages(form.errors)}, 400

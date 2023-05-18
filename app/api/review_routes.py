@@ -65,6 +65,7 @@ def get_current():
 @review_routes.route("", methods=['POST'])
 @login_required
 def create_review():
+    # Directly access the JSON data using request.json
     data = request.json
     new_review = Review(
         exerciseId=data.get('exerciseId'),
@@ -73,7 +74,9 @@ def create_review():
         description=data.get('description')
     )
     form = ReviewForm()
-    form['csrf_token'].data = data.get('csrf_token')
+    # Flask's get_json() to retrieve from JSON payload
+    # Safer approach
+    form['csrf_token'].data = request.get_json().get('csrf_token')
 
     if form.validate_on_submit():
         db.session.add(new_review)
@@ -81,3 +84,21 @@ def create_review():
         return jsonify(new_review.to_dict()), 201
     else:
         return {"errors": validation_errors_to_error_messages(form.errors)}, 400
+
+# Update Review
+@review_routes.route("/<int:id>", methods=["PATCH"])
+@login_required
+def update_review(id):
+    form = ReviewForm()
+    form['csrf_token'].data = request.cookies['csrf_token']
+    if form.validate_on_submit():
+        review = Review.query.get(id)
+        if review.userId == current_user.id:
+            review.description = form.description.data
+            review.stars = form.stars.data
+            db.session.commit()
+            return jsonify(review.to_dict()), 200
+        else:
+            return {"errors": 'Unauthorized'}, 403
+    else:
+        return {'errors': validation_errors_to_error_messages(form.errors)}, 400

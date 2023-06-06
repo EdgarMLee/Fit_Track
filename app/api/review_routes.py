@@ -92,7 +92,9 @@ def update_review(id):
     form = ReviewForm()
     form['csrf_token'].data = request.cookies['csrf_token']
     if form.validate_on_submit():
+        #Query to retrive single review that belongs to specific iD
         review = Review.query.get(id)
+        #Authorization condition if ID belongs to the user
         if review.userId == current_user.id:
             review.description = form.description.data
             review.stars = form.stars.data

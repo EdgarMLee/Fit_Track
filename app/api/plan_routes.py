@@ -1,3 +1,4 @@
+
 from flask import Blueprint, request, jsonify
 from app.models import db, Plan, Workout, Exercise, Review, Set
 from ..forms.plan_form import PlanForm
@@ -8,7 +9,7 @@ plan_routes = Blueprint("plans", __name__, url_prefix="/plans")
 
 #Get all Plans
 @plan_routes.route("")
-def all_plans(): 
+def all_plans():
     #Query for all plans
     plans = Plan.query.all()
     #Create an array that stores list of plan dictionaries directly

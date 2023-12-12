@@ -6,7 +6,7 @@ class Review(db.Model):
 
   id = db.Column(db.Integer, primary_key=True)
   description = db.Column(db.String(500), nullable=False)
-  stars = db.Column(db.Integer(1,5), nullable=False)
+  stars = db.Column(db.Integer, nullable=False)
   userId = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
   exerciseId = db.Column(db.Integer, db.ForeignKey('exercises.id'), nullable=False)
 

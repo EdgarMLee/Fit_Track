@@ -1,0 +1,43 @@
+#modal {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999999999;
+}
+
+#modal-background {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 999999999;
+}
+
+#modal-content {
+  position: absolute;
+  background-color: white;
+  max-height: 90vh;
+  z-index: 999999999;
+  border-radius: 5px;
+  animation-duration: 400ms;
+  animation-iteration-count: 1;
+  animation-fill-mode: both;
+  animation-name: slidein;
+}
+@keyframes slidein {
+  0% {
+    opacity: 0;
+    transform: translate(0px, 100%);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
